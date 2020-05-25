@@ -14,7 +14,7 @@ class Reader {
 }
 
 function tokenize(str) {
-  const re = /[\s,]*([^\s]*)/g;
+  const re = /[\s,]*([()]|[^\s()]*)/g;
   let match = null;
   let results = [];
   while ((match = re.exec(str)[1]) != "") {
@@ -24,6 +24,40 @@ function tokenize(str) {
     results.push(match);
   }
   return results;
+}
+
+function read_form(reader) {
+  const token = reader.peek();
+  switch (token) {
+    // reader macros/transforms
+    case ";":
+      return null; // Ignore comments
+
+    // list
+    case ")":
+      throw new Error("unexpected ')'");
+    case "(":
+      return read_list(reader);
+    default:
+      return read_atom(reader);
+  }
+}
+
+// read list of tokens
+function read_list(reader) {
+  const ast = []; // consider it as list
+  let token = reader.next();
+  if (token !== "(") {
+    throw new Error("expected '('");
+  }
+  while ((token = reader.peek()) !== ")") {
+    if (!token) {
+      throw new Error("expected ')', got EOF");
+    }
+    ast.push(read_form(reader));
+  }
+  reader.next();
+  return ast;
 }
 
 function read_atom(reader) {
@@ -42,5 +76,5 @@ export function read_str(str) {
   if (tokens.length === 0) {
     throw new BlankException();
   }
-  return read_atom(new Reader(tokens));
+  return read_form(new Reader(tokens));
 }

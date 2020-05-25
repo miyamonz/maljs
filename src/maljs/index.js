@@ -1,8 +1,9 @@
 import { BlankException, read_str } from "./reader.js";
+import { pr_str } from "./printer.js";
 
 const READ = (str) => read_str(str);
 const EVAL = (ast, env) => ast;
-const PRINT = (exp) => exp.toString();
+const PRINT = (exp) => pr_str(exp);
 
 // repl
 export const REP = (str) => PRINT(EVAL(READ(str), {}));
