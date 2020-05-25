@@ -18,5 +18,9 @@ describe("maljs", () => {
     assert.equal(REP("( 1 5   )"), "(1 5)");
     assert.equal(REP("( 1 4  5   )"), "(1 4 5)");
     assert.equal(REP("(nil 0 a)"), "(nil 0 a)");
+
+    assert.equal(REP("( +   1   (+   2 3   )   )"), "(+ 1 (+ 2 3))");
+    assert.equal(REP("(1, 2,  ,,, 3,,)"), "(1 2 3)");
+    assert.equal(REP("(()())"), "(() ())");
   });
 });
