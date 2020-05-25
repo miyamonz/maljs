@@ -28,7 +28,6 @@ function tokenize(str) {
 
 function read_atom(reader) {
   const token = reader.next();
-  console.log("token: ", token);
   if (token.match(/^-?[0-9]+$/)) {
     return parseInt(token, 10); // integer
   } else if (token.match(/^-?[0-9][0-9.]*$/)) {
@@ -39,7 +38,7 @@ function read_atom(reader) {
 }
 
 export function read_str(str) {
-  var tokens = tokenize(str);
+  const tokens = tokenize(str);
   if (tokens.length === 0) {
     throw new BlankException();
   }
