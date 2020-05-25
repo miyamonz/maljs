@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { REP } from "./maljs/index.js";
+import { send } from "./maljs/index.js";
 
 export default function App() {
   const [history, setHistory] = useState([]);
@@ -9,7 +9,7 @@ export default function App() {
   const onEnter = (text) => {
     const queue = {
       text,
-      result: REP(text),
+      result: send(text),
       time: +Date.now(),
     };
     appendHistpry(queue);
