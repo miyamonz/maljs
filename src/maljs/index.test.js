@@ -25,4 +25,24 @@ describe("maljs", () => {
 
     // 2つより多い引数は未サポート 難しくはないと思う
   });
+
+  describe("environment", () => {
+    it("def", () => {
+      assert.equal(REP("(def x 1)"), "1");
+      assert.equal(REP("(+ x 1 )"), "2");
+    });
+
+    it("let", () => {
+      assert.equal(REP("(let (z 5) z )"), "5");
+      assert.equal(REP("(let (p 5, q 3) (+ p q) )"), "8");
+      REP("(def  y (let (z 10) 10) )");
+      assert.equal(REP("y"), "10");
+    });
+
+    it("outside", () => {
+      assert.equal(REP("(def a  5 )"), "5");
+      assert.equal(REP("(let (b  8) a )"), "5");
+      assert.equal(REP("(let (c  10) (let (d 4) a) )"), "5");
+    });
+  });
 });
