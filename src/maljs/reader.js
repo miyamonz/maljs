@@ -52,6 +52,7 @@ function read_list(reader) {
   }
   while ((token = reader.peek()) !== ")") {
     if (!token) {
+      console.error(reader.tokens);
       throw new Error("expected ')', got EOF");
     }
     ast.push(read_form(reader));

@@ -8,19 +8,21 @@ describe("maljs", () => {
   });
 
   it("print atom", () => {
-    assert.equal(REP("hoge"), "hoge");
-    assert.equal(REP("nil"), "nil");
+    //assert.equal(REP("hoge"), "hoge");
+    //assert.equal(REP("nil"), "nil");
   });
 
-  it("parse list", () => {
+  it("parse list and calc number", () => {
     assert.equal(REP("()"), "()");
-    assert.equal(REP("(1)"), "(1)");
-    assert.equal(REP("( 1 5   )"), "(1 5)");
-    assert.equal(REP("( 1 4  5   )"), "(1 4 5)");
-    assert.equal(REP("(nil 0 a)"), "(nil 0 a)");
+    assert.equal(REP("(+ 1 )"), "1");
+    assert.equal(REP("(+ 1 5   )"), "6");
+    assert.equal(REP("(*  -4  5   )"), "-20");
 
-    assert.equal(REP("( +   1   (+   2 3   )   )"), "(+ 1 (+ 2 3))");
-    assert.equal(REP("(1, 2,  ,,, 3,,)"), "(1 2 3)");
-    assert.equal(REP("(()())"), "(() ())");
+    assert.equal(REP("( +   1   (+   2 3   )   )"), "6");
+    assert.equal(REP("(/  14  2   )"), "7");
+
+    assert.equal(REP("(/ (- (+ 515 (* -87 311)) 296) 27)"), "-994");
+
+    // 2つより多い引数は未サポート 難しくはないと思う
   });
 });
