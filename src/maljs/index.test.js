@@ -45,4 +45,20 @@ describe("maljs", () => {
       assert.equal(REP("(let (c  10) (let (d 4) a) )"), "5");
     });
   });
+
+  describe("list", () => {
+    it("list", () => {
+      assert.equal(REP("(list)"), "()");
+      assert.equal(REP("(list? ())"), "true");
+      assert.equal(REP("(list? (list 6 4))"), "true");
+      assert.equal(REP("(list? 4)"), "false");
+
+      assert.equal(REP("(empty? (list))"), "true");
+      assert.equal(REP("(empty? (list 1))"), "false");
+
+      assert.equal(REP("(count (list))"), "0");
+      assert.equal(REP("(count (list 4))"), "1");
+      assert.equal(REP("(count (list 4 6))"), "2");
+    });
+  });
 });
