@@ -78,5 +78,12 @@ describe("maljs", () => {
       // empty list is truthy.
       assert.equal(REP("(if () 2 3)"), "2");
     });
+    it("conditional", () => {
+      assert.equal(REP("(= 0 0)"), "true");
+      assert.equal(REP("(= 1 0)"), "false");
+
+      assert.equal(REP("(= (list 4 6) (list 4 (+ 3 3 )))"), "true");
+      assert.equal(REP("(= (list 5 6) (list 4 (+ 3 3 )))"), "false");
+    });
   });
 });
