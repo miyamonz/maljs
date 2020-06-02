@@ -66,10 +66,12 @@ describe("maljs", () => {
     it("boolean", () => {
       assert.equal(REP("true"), "true");
       assert.equal(REP("false"), "false");
+      assert.equal(REP("nil"), "nil");
     });
     it("if", () => {
       assert.equal(REP("(if true 2)"), "2");
       assert.equal(REP("(if false 2 3)"), "3");
+      assert.equal(REP("(if nil 2 3)"), "3");
     });
   });
 });
