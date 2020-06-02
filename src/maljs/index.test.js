@@ -72,6 +72,11 @@ describe("maljs", () => {
       assert.equal(REP("(if true 2)"), "2");
       assert.equal(REP("(if false 2 3)"), "3");
       assert.equal(REP("(if nil 2 3)"), "3");
+
+      // only nil and false are falsy.
+      assert.equal(REP("(if 0 2 3)"), "2");
+      // empty list is truthy.
+      assert.equal(REP("(if () 2 3)"), "2");
     });
   });
 });
