@@ -10,6 +10,11 @@ export const core_ns = new Map([
   ["empty?", (a) => a.length === 0],
   ["count", (a) => (a === null ? 0 : a.length)],
   ["=", equal],
+
+  ["<", (a, b) => a < b],
+  ["<=", (a, b) => a <= b],
+  [">", (a, b) => a > b],
+  [">=", (a, b) => a >= b],
 ]);
 
 function equal(a, b) {
