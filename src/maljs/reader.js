@@ -67,6 +67,10 @@ function read_atom(reader) {
     return parseInt(token, 10); // integer
   } else if (token.match(/^-?[0-9][0-9.]*$/)) {
     return parseFloat(token, 10); // float
+  } else if (token === "true") {
+    return true;
+  } else if (token === "false") {
+    return false;
   } else {
     return Symbol.for(token); // symbol
   }

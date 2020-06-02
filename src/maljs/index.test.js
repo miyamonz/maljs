@@ -61,4 +61,15 @@ describe("maljs", () => {
       assert.equal(REP("(count (list 4 6))"), "2");
     });
   });
+
+  describe("conditional", () => {
+    it("boolean", () => {
+      assert.equal(REP("true"), "true");
+      assert.equal(REP("false"), "false");
+    });
+    it("if", () => {
+      assert.equal(REP("(if true 2)"), "2");
+      assert.equal(REP("(if false 2 3)"), "3");
+    });
+  });
 });

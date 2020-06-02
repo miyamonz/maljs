@@ -23,7 +23,7 @@ const EVAL = (ast, env) => {
     return ast;
   }
 
-  const [a0, a1, a2] = ast;
+  const [a0, a1, a2, a3] = ast;
   switch (typeof a0 === "symbol" ? Symbol.keyFor(a0) : Symbol.for(":default")) {
     case "def":
       return env_set(env, a1, EVAL(a2, env));
@@ -33,6 +33,13 @@ const EVAL = (ast, env) => {
         env_set(let_env, a1[i], EVAL(a1[i + 1], let_env));
       }
       return EVAL(a2, let_env);
+    case "if":
+      // (if a1_cond a2_true a3_false)
+      const cond = EVAL(a1, env);
+      if (cond === null || cond === false) {
+        return typeof a3 !== "undefined" ? EVAL(a3, env) : null;
+      }
+      return EVAL(a2, env);
     default:
       // evaluate function
       const [f, ...args] = eval_ast(ast, env);
