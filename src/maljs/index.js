@@ -2,6 +2,7 @@ import { BlankException, read_str } from "./reader.js";
 import { pr_str } from "./printer.js";
 import { isList } from "./types.js";
 import { new_env, env_get, env_set } from "./env.js";
+import { core_ns } from "./core.js";
 
 const READ = (str) => read_str(str);
 
@@ -42,10 +43,11 @@ const PRINT = (exp) => pr_str(exp);
 
 // repl
 const env = new_env();
-env_set(env, Symbol.for("+"), (a, b = 0) => a + b);
-env_set(env, Symbol.for("-"), (a, b = 0) => a - b);
-env_set(env, Symbol.for("*"), (a, b = 1) => a * b);
-env_set(env, Symbol.for("/"), (a, b) => a / b);
+
+// core
+for (let [k, v] of core_ns) {
+  env_set(env, Symbol.for(k), v);
+}
 export const REP = (str) => PRINT(EVAL(READ(str), env));
 
 export function send(text) {
