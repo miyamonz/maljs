@@ -116,4 +116,12 @@ describe("maljs", () => {
       assert.equal(REP("(plus3 5)"), "8");
     });
   });
+  describe("do", () => {
+    it("do", () => {
+      assert.equal(REP("(do 5 8)"), "8");
+      assert.equal(REP("(do (def a 5) a)"), "5");
+      assert.equal(REP("(do (def a 6) 7  (+ a 3))"), "9");
+      assert.equal(REP("(do (do 8))"), "8");
+    });
+  });
 });

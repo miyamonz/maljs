@@ -33,6 +33,8 @@ const EVAL = (ast, env) => {
         env_set(let_env, a1[i], EVAL(a1[i + 1], let_env));
       }
       return EVAL(a2, let_env);
+    case "do":
+      return eval_ast(ast.slice(1), env)[ast.length - 2];
     case "if":
       // (if a1_cond a2_true a3_false)
       const cond = EVAL(a1, env);
