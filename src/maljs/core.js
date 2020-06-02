@@ -1,4 +1,5 @@
 import { isList } from "./types.js";
+import { read_str } from "./reader.js";
 
 export const core_ns = new Map([
   ["+", (a, b = 0) => a + b],
@@ -15,6 +16,8 @@ export const core_ns = new Map([
   ["<=", (a, b) => a <= b],
   [">", (a, b) => a > b],
   [">=", (a, b) => a >= b],
+
+  ["read-string", read_str],
 ]);
 
 function equal(a, b) {

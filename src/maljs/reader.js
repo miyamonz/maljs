@@ -14,7 +14,7 @@ class Reader {
 }
 
 function tokenize(str) {
-  const re = /[\s,]*([()]|[^\s,()]*)/g;
+  const re = /[\s,]*([()]|"(?:\\.|[^\\"])*"?|[^\s,()]*)/g;
   let match = null;
   let results = [];
   while ((match = re.exec(str)[1]) != "") {
@@ -67,6 +67,12 @@ function read_atom(reader) {
     return parseInt(token, 10); // integer
   } else if (token.match(/^-?[0-9][0-9.]*$/)) {
     return parseFloat(token, 10); // float
+  } else if (token.match(/^"(?:\\.|[^\\"])*"$/)) {
+    return token
+      .slice(1, token.length - 1)
+      .replace(/\\(.)/g, (_, c) => (c === "n" ? "\n" : c)); //string
+  } else if (token[0] === `"`) {
+    throw new Error(`expected '"', but got EOF`);
   } else if (token === "nil") {
     return null;
   } else if (token === "true") {
@@ -81,7 +87,7 @@ function read_atom(reader) {
 export function read_str(str) {
   const tokens = tokenize(str);
   if (tokens.length === 0) {
-    throw new BlankException();
+    throw new BlankException(`token is blank ${str}`);
   }
   return read_form(new Reader(tokens));
 }
