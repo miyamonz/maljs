@@ -115,6 +115,24 @@ describe("maljs", () => {
       REP("(def plus3 (gen-plusX 3))");
       assert.equal(REP("(plus3 5)"), "8");
     });
+
+    it("recursive function", () => {
+      //fibbonati
+      REP(`
+          (def fib 
+            (fn (N) 
+              (if (= N 0) 
+                1 
+                (if (= N 1) 
+                  1 
+                  (+ 
+                    (fib (- N 1)) 
+                    (fib (- N 2)))))))
+    `);
+      assert.equal(REP("(fib 1)"), "1");
+      assert.equal(REP("(fib 5)"), "8");
+      assert.equal(REP("(fib 6)"), "13");
+    });
   });
   describe("do", () => {
     it("do", () => {
