@@ -142,4 +142,20 @@ describe("maljs", () => {
       assert.equal(REP("(do (do 8))"), "8");
     });
   });
+
+  describe("recursive tail-call function", () => {
+    it("sum", () => {
+      REP(
+        " (def sum2 (fn (n acc) (if (= n 0) acc (sum2 (- n 1) (+ n acc))))) "
+      );
+      assert.equal(REP("(sum2 10 0)"), "55");
+      assert.equal(REP("(def res2 nil)"), "nil");
+      assert.equal(REP("(do (def res2 (sum2 10000 0)) res2)"), "50005000");
+    });
+    it("mutually recursive tail-call function", () => {
+      REP("(def foo (fn (n) (if (= n 0) 0 (bar (- n 1)))))");
+      REP("(def bar (fn (n) (if (= n 0) 0 (foo (- n 1)))))");
+      assert.equal(REP("(foo 10000)"), "0");
+    });
+  });
 });
