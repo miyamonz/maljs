@@ -40,6 +40,9 @@ const EVAL = (ast, env) => {
         return typeof a3 !== "undefined" ? EVAL(a3, env) : null;
       }
       return EVAL(a2, env);
+    case "fn":
+      // new_envの 第2,3引数でenv_setされる
+      return (...args) => EVAL(a2, new_env(env, a1, args));
     default:
       // evaluate function
       const [f, ...args] = eval_ast(ast, env);

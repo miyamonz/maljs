@@ -101,4 +101,19 @@ describe("maljs", () => {
       assert.equal(REP("(<= 0 3)"), "true");
     });
   });
+  describe("function", () => {
+    it("fn", () => {
+      assert.equal(REP("((fn (a b) (+ a b)) 1 2)"), "3");
+      assert.equal(REP("((fn () 3) )"), "3");
+      assert.equal(REP("((fn (f x) (f x)) (fn (a) (+ 1 a)) 4 )"), "5");
+      assert.equal(REP("(((fn (b) (fn (a) (+ b a))) 4) 5)"), "9");
+
+      REP("(def plus5 (fn (a) (+ a 5)) )");
+      assert.equal(REP("(plus5 3)"), "8");
+
+      REP("(def gen-plusX (fn (x) (fn (a) (+ a x)) ))");
+      REP("(def plus3 (gen-plusX 3))");
+      assert.equal(REP("(plus3 5)"), "8");
+    });
+  });
 });
