@@ -158,6 +158,9 @@ describe("maljs", () => {
       assert.equal(REP("(foo 10000)"), "0");
     });
   });
+  it("comment", () => {
+    assert.equal(REP(`100; hello`), `100`);
+  });
   describe("string", () => {
     it("literal", () => {
       assert.equal(REP(`"hoge"`), `"hoge"`);
@@ -168,6 +171,7 @@ describe("maljs", () => {
       assert.equal(REP(`(read-string "(1 2 (3 4) nil)")`), "(1 2 (3 4) nil)");
       assert.equal(REP(`(read-string "a")`), `a`);
       assert.equal(REP(String.raw`(read-string "\"\n\"")`), String.raw`"\n"`);
+      assert.equal(REP(`(read-string "4; comment")`), `4`);
     });
   });
 });
