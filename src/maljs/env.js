@@ -1,6 +1,6 @@
 // bind とexprは関数呼出のときに引数を代入してenvとして保存する
 export function new_env(outer = {}, binds = [], exprs = []) {
-  const e = { ...outer };
+  const e = Object.create(outer);
   // Bind symbols in binds to values in exprs
   for (let i = 0; i < binds.length; i++) {
     if (Symbol.keyFor(binds[i]) === "&") {

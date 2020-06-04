@@ -90,6 +90,7 @@ const env = new_env();
 for (let [k, v] of core_ns) {
   env_set(env, Symbol.for(k), v);
 }
+env_set(env, Symbol.for("eval"), (a) => EVAL(a, env));
 export const REP = (str) => PRINT(EVAL(READ(str), env));
 
 export function send(text) {

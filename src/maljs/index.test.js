@@ -173,5 +173,12 @@ describe("maljs", () => {
       assert.equal(REP(String.raw`(read-string "\"\n\"")`), String.raw`"\n"`);
       assert.equal(REP(`(read-string "4; comment")`), `4`);
     });
+    it("read-string eval", () => {
+      assert.equal(REP(`(eval (read-string "(+ 2 3)"))`), "5");
+      assert.equal(
+        REP(`(let () (do (eval (read-string "(def aa 7)")) aa ))`),
+        7
+      );
+    });
   });
 });
