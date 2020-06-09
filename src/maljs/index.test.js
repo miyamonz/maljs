@@ -181,4 +181,12 @@ describe("maljs", () => {
       );
     });
   });
+
+  describe("atom", () => {
+    it("atom", () => {
+      assert.equal(REP(`(def a (atom 2))`), `(atom 2)`);
+      assert.equal(REP(`(atom? a)`), `true`);
+      assert.equal(REP(`(atom? 1)`), `false`);
+    });
+  });
 });

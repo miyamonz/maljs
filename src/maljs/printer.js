@@ -1,4 +1,5 @@
-import { isList } from "./types.js";
+import { isList, Atom } from "./types.js";
+
 export function pr_str(obj) {
   if (isList(obj)) {
     return `(${obj.map((e) => pr_str(e)).join(" ")})`;
@@ -10,6 +11,8 @@ export function pr_str(obj) {
       .replace(/"/g, String.raw`\"`)
       .replace(/\n/g, String.raw`\n`);
     return `"${str}"`;
+  } else if (obj instanceof Atom) {
+    return `(atom ${pr_str(obj.val)})`;
   } else if (obj === null) {
     return "nil";
   } else {

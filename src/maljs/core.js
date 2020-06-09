@@ -1,4 +1,4 @@
-import { isList } from "./types.js";
+import { isList, Atom } from "./types.js";
 import { read_str } from "./reader.js";
 
 export const core_ns = new Map([
@@ -18,6 +18,9 @@ export const core_ns = new Map([
   [">=", (a, b) => a >= b],
 
   ["read-string", read_str],
+
+  ["atom", (val) => new Atom(val)],
+  ["atom?", (a) => a instanceof Atom],
 ]);
 
 function equal(a, b) {
