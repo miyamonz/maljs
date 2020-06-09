@@ -187,6 +187,26 @@ describe("maljs", () => {
       assert.equal(REP(`(def a (atom 2))`), `(atom 2)`);
       assert.equal(REP(`(atom? a)`), `true`);
       assert.equal(REP(`(atom? 1)`), `false`);
+      assert.equal(REP(`(deref a)`), `2`);
+      assert.equal(REP(`(reset! a 3)`), `3`);
+      assert.equal(REP(`(deref a)`), `3`);
+    });
+    it("swap", () => {
+      assert.equal(REP(`(swap! a (fn (a) a))`), `3`);
+      assert.equal(REP(`(swap! a (fn (a) (* a 2)))`), `6`);
+      assert.equal(REP(`(swap! a (fn (a b) (* a b)) 10)`), `60`); // (swap! atom fn ...args) は atom.val = f(atom.val, ...args)
+      assert.equal(REP(`(swap! a + 4)`), `64`); // こういうことが可能になる
+
+      REP(`(def inc (fn (a) (+ 1 a)))`);
+      REP(`(def atm (atom 3))`);
+      REP(`(def f (fn () (swap! atm inc)))`);
+      assert.equal(REP(`(f)`), `4`);
+      assert.equal(REP(`(f)`), `5`);
+    });
+    it("closures can retain atoms", () => {
+      REP(`(def g (let (atm (atom 0)) (fn () (deref atm))))`);
+      REP(`(def atm (atom 1))`);
+      assert.equal(REP(`(g)`), `0`);
     });
   });
 });

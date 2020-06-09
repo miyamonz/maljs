@@ -57,10 +57,11 @@ const EVAL = (ast, env) => {
       case "fn":
         // new_envの 第2,3引数でenv_setされる
 
-        //const fn = (...args) => EVAL(a2, new_env(env, a1, args));
+        const fn = (...args) => EVAL(a2, new_env(env, a1, args));
+        // これはそのままこのEVALループで評価されたら、
+        // createMalFuncが作成するメタデータ側で評価されるのでこのfnが使われないが
+        // その他のswap!とかで使われたりするので定義しておく必要はある
 
-        // これってTCOで下のdefaultで実行するからfnの中いらない気がするので空にしてみる
-        const fn = () => {};
         return createMalFunc(fn, a2, env, a1);
       default:
         // evaluate function

@@ -21,6 +21,9 @@ export const core_ns = new Map([
 
   ["atom", (val) => new Atom(val)],
   ["atom?", (a) => a instanceof Atom],
+  ["deref", (a) => a.val],
+  ["reset!", (atom, a) => (atom.val = a)],
+  ["swap!", (atom, f, ...args) => (atom.val = f(atom.val, ...args))],
 ]);
 
 function equal(a, b) {
