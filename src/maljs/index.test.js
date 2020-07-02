@@ -191,6 +191,10 @@ describe("maljs", () => {
       assert.equal(REP(`(reset! a 3)`), `3`);
       assert.equal(REP(`(deref a)`), `3`);
     });
+    it("@", () => {
+      assert.equal(REP(`(def b (atom 5))`), `(atom 5)`);
+      assert.equal(REP(`@b`), `5`);
+    });
     it("swap", () => {
       assert.equal(REP(`(swap! a (fn (a) a))`), `3`);
       assert.equal(REP(`(swap! a (fn (a) (* a 2)))`), `6`);
