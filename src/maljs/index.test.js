@@ -101,6 +101,18 @@ describe("maljs", () => {
       assert.equal(REP("(<= 0 3)"), "true");
     });
   });
+  it("str", () => {
+    assert.equal(REP(`(str)`), `""`);
+    assert.equal(REP(`(str "")`), `""`);
+    assert.equal(REP(`(str "abc")`), `"abc"`);
+    assert.equal(REP(`(str 1 "abc" 3)`), `"1abc3"`);
+
+    assert.equal(
+      REP(String.raw`(str "abc\\def\\ghi")`),
+      String.raw`"abc\\def\\ghi"`
+    );
+    assert.equal(REP(`(str (list))`), `"()"`);
+  });
   describe("function", () => {
     it("fn", () => {
       assert.equal(REP("((fn (a b) (+ a b)) 1 2)"), "3");

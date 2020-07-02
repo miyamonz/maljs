@@ -1,4 +1,5 @@
 import { isList, Atom } from "./types.js";
+import { pr_str } from "./printer";
 import { read_str } from "./reader.js";
 
 export const core_ns = new Map([
@@ -17,6 +18,8 @@ export const core_ns = new Map([
   [">", (a, b) => a > b],
   [">=", (a, b) => a >= b],
 
+  ["pr-str", (...a) => a.map((e) => pr_str(e, true)).join(" ")],
+  ["str", (...a) => a.map((e) => pr_str(e, false)).join("")],
   ["read-string", read_str],
 
   ["atom", (val) => new Atom(val)],
