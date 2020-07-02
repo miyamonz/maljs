@@ -145,6 +145,18 @@ export const REP = (str) => PRINT(EVAL(READ(str), env));
 
 //defined using language itself
 REP("(def not (fn (a) (if a false true)))");
+REP(`
+(defmacro cond
+  (fn (& xs)
+    (if (> (count xs) 0)
+      (list
+        'if
+        (first xs)
+        (if (> (count xs) 1)
+          (nth xs 1)
+          (throw "odd number of forms to cond"))
+        (cons 'cond (rest (rest xs)))))))
+`);
 
 export function send(text) {
   try {

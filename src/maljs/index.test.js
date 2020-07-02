@@ -367,5 +367,17 @@ describe("maljs", () => {
         `7`
       );
     });
+
+    it("cond", () => {
+      assert.equal(REP(`(cond)`), `nil`);
+      assert.equal(REP(`(cond true 7)`), `7`);
+      assert.equal(REP(`(cond true 7 true 8)`), `7`);
+      assert.equal(REP(`(cond false 7 true 8)`), `8`);
+      assert.equal(REP(`(cond false 7 false 8 "else" 9)`), `9`);
+      assert.equal(REP(`(cond false 7 (= 2 2) 8 "else" 9)`), `8`);
+      assert.equal(REP(`(cond false 7 false 8 false 9)`), `nil`);
+
+      assert.equal(REP(`(let (x (cond false "no" true "yes")) x)`), `"yes"`);
+    });
   });
 });
