@@ -279,6 +279,9 @@ describe("maljs", () => {
       assert.equal(REP(`(quasiquote (1 b 3))`), `(1 b 3)`);
       assert.equal(REP(`(quasiquote (1 (unquote b) 3))`), `(1 (1 "b" "d") 3)`);
       assert.equal(REP(`(quasiquote ((unquote 1) (unquote 2)))`), `(1 2)`);
+
+      //shorthand
+      assert.equal(REP("`(1 ~b 3)"), `(1 (1 "b" "d") 3)`);
     });
     it("splice-unquote", () => {
       assert.equal(REP(`(def c (quote (1 "b" "d")))`), `(1 "b" "d")`);
