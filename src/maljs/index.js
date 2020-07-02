@@ -77,6 +77,17 @@ const EVAL = (ast, env) => {
         return env_set(env, a1, func);
       case "macroexpand":
         return macroexpand(a1, env);
+      case "try":
+        try {
+          return EVAL(a1, env);
+        } catch (exc) {
+          if (a2 && a2[0] === Symbol.for("catch")) {
+            if (exc instanceof Error) exc = exc.message;
+            return EVAL(a2[2], new_env(env, [a2[1]], [exc]));
+          } else {
+            throw exc;
+          }
+        }
       case "do":
         eval_ast(ast.slice(1, -1), env);
         ast = ast[ast.length - 1];

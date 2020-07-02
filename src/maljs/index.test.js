@@ -352,5 +352,20 @@ describe("maljs", () => {
         }
       );
     });
+    it("try, catch", () => {
+      assert.equal(REP(`(try 123 (catch e 456))`), `123`);
+
+      assert.equal(REP(`(try abc (catch exc exc))`), `"'abc' not found"`);
+      assert.equal(REP(`(try (abc 1 2) (catch exc exc))`), `"'abc' not found"`);
+      assert.equal(
+        REP(`(try (nth () 1) (catch exc (str exc)))`),
+        `"nth: index out of range"`
+      );
+
+      assert.equal(
+        REP(`(try (throw "my exception") (catch exc (do (str "exc:" exc) 7)))`),
+        `7`
+      );
+    });
   });
 });
