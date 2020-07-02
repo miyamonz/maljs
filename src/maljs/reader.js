@@ -14,7 +14,7 @@ class Reader {
 }
 
 function tokenize(str) {
-  const re = /[\s,]*([()'`~@]|"(?:\\.|[^\\"])*"?|;.*|[^\s,();]*)/g;
+  const re = /[\s,]*(~@|[()'`~@]|"(?:\\.|[^\\"])*"?|;.*|[^\s,();]*)/g;
   let match = null;
   let results = [];
   while ((match = re.exec(str)[1]) != "") {
@@ -45,6 +45,9 @@ function read_form(reader) {
     case "~":
       reader.next();
       return [Symbol.for("unquote"), read_form(reader)];
+    case "~@":
+      reader.next();
+      return [Symbol.for("splice-unquote"), read_form(reader)];
 
     // list
     case ")":

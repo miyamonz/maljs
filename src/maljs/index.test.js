@@ -290,6 +290,8 @@ describe("maljs", () => {
         REP(`(quasiquote (1 (splice-unquote c) 3))`),
         `(1 1 "b" "d" 3)`
       );
+      //shorthand
+      assert.equal(REP("`(1 ~@c 3)"), `(1 1 "b" "d" 3)`);
     });
     it("quote equality", () => {
       assert.equal(REP(`(= (quote abc) (quote abc))`), `true`);
