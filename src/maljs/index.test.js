@@ -264,6 +264,9 @@ describe("maljs", () => {
       assert.equal(REP(`(quasiquote (1 2 3))`), `(1 2 3)`);
       assert.equal(REP(`(quasiquote (1 2 (3 4)))`), `(1 2 (3 4))`);
       assert.equal(REP(`(quasiquote (nil))`), `(nil)`);
+
+      //shorthand
+      assert.equal(REP("`(1 2 3)"), `(1 2 3)`);
     });
     it("unquote", () => {
       assert.equal(REP(`(quasiquote (unquote 7))`), `7`);
