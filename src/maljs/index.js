@@ -1,6 +1,6 @@
 import { BlankException, read_str } from "./reader.js";
 import { pr_str } from "./printer.js";
-import { isList } from "./types.js";
+import { isList, _clone } from "./types.js";
 import { new_env, env_get, env_set } from "./env.js";
 import { core_ns } from "./core.js";
 
@@ -22,6 +22,18 @@ const quasiquote = (ast) => {
   }
 };
 
+const macroexpand = (ast, env) => {
+  // macroexpandはlistでかつ関数呼び出しの形に行われる
+  while (isList(ast) && typeof ast[0] === "symbol" && ast[0] in env) {
+    let f = env_get(env, ast[0]);
+    if (!f.ismacro) {
+      break;
+    }
+    ast = f(...ast.slice(1));
+  }
+  return ast;
+};
+
 const eval_ast = (ast, env) => {
   if (typeof ast === "symbol") {
     return env_get(env, ast);
@@ -33,12 +45,11 @@ const eval_ast = (ast, env) => {
 };
 const EVAL = (ast, env) => {
   while (true) {
-    if (!isList(ast)) {
-      return eval_ast(ast, env);
-    }
-    if (ast.length === 0) {
-      return ast;
-    }
+    if (!isList(ast)) return eval_ast(ast, env);
+    //評価されるastは常にmacro展開を試みる
+    ast = macroexpand(ast, env);
+    if (!isList(ast)) return eval_ast(ast, env);
+    if (ast.length === 0) return ast;
 
     const [a0, a1, a2, a3] = ast;
     switch (
@@ -60,6 +71,12 @@ const EVAL = (ast, env) => {
       case "quasiquote":
         ast = quasiquote(a1);
         break; // continue TCO loop
+      case "defmacro":
+        const func = _clone(EVAL(a2, env));
+        func.ismacro = true;
+        return env_set(env, a1, func);
+      case "macroexpand":
+        return macroexpand(a1, env);
       case "do":
         eval_ast(ast.slice(1, -1), env);
         ast = ast[ast.length - 1];
@@ -114,6 +131,9 @@ for (let [k, v] of core_ns) {
 }
 env_set(env, Symbol.for("eval"), (a) => EVAL(a, env));
 export const REP = (str) => PRINT(EVAL(READ(str), env));
+
+//defined using language itself
+REP("(def not (fn (a) (if a false true)))");
 
 export function send(text) {
   try {

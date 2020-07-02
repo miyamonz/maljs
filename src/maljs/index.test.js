@@ -302,5 +302,20 @@ describe("maljs", () => {
       assert.equal(REP(`(= (quote abc) nil)`), `false`);
       assert.equal(REP(`(= nil (quote abc))`), `false`);
     });
+    it("defmacro", () => {
+      REP(`(defmacro one (fn () 1))`);
+      assert.equal(REP(`(one)`), `1`);
+      REP(`(defmacro two (fn () 2))`);
+      assert.equal(REP(`(two)`), `2`);
+      REP("(defmacro unless (fn (pred a b) `(if ~pred ~b ~a)))");
+      assert.equal(REP(`(unless false 7 8)`), `7`);
+      assert.equal(REP(`(unless true 7 8)`), `8`);
+      REP(`(defmacro unless2 (fn (pred a b) (list 'if (list 'not pred) a b)))`);
+      assert.equal(REP(`(unless2 false 7 8)`), `7`);
+      assert.equal(REP(`(unless2 true 7 8)`), `8`);
+    });
+    it("macroexpand", () => {
+      assert.equal(REP(`(macroexpand (unless2 2 3 4))`), `(if (not 2) 3 4)`);
+    });
   });
 });
