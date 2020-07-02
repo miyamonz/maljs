@@ -244,5 +244,31 @@ describe("maljs", () => {
       assert.equal(REP(`(quote (1 2 3))`), `(1 2 3)`);
       assert.equal(REP(`(quote (1 2 (3 4)))`), `(1 2 (3 4))`);
     });
+    it("quasiquote", () => {
+      assert.equal(REP(`(quasiquote 7)`), `7`);
+      assert.equal(REP(`(quasiquote (1 2 3))`), `(1 2 3)`);
+      assert.equal(REP(`(quasiquote (1 2 (3 4)))`), `(1 2 (3 4))`);
+      assert.equal(REP(`(quasiquote (nil))`), `(nil)`);
+    });
+    it("unquote", () => {
+      assert.equal(REP(`(quasiquote (unquote 7))`), `7`);
+      assert.equal(REP(`(def a 8)`), `8`);
+      assert.equal(REP(`(quasiquote a)`), `a`);
+      assert.equal(REP(`(quasiquote (unquote a))`), `8`);
+      assert.equal(REP(`(quasiquote (1 a 3))`), `(1 a 3)`);
+      assert.equal(REP(`(quasiquote (1 (unquote a) 3))`), `(1 8 3)`);
+      assert.equal(REP(`(def b (quote (1 "b" "d")))`), `(1 "b" "d")`);
+      assert.equal(REP(`(quasiquote (1 b 3))`), `(1 b 3)`);
+      assert.equal(REP(`(quasiquote (1 (unquote b) 3))`), `(1 (1 "b" "d") 3)`);
+      assert.equal(REP(`(quasiquote ((unquote 1) (unquote 2)))`), `(1 2)`);
+    });
+    it("splice-unquote", () => {
+      assert.equal(REP(`(def c (quote (1 "b" "d")))`), `(1 "b" "d")`);
+      assert.equal(REP(`(quasiquote (1 c 3))`), `(1 c 3)`);
+      assert.equal(
+        REP(`(quasiquote (1 (splice-unquote c) 3))`),
+        `(1 1 "b" "d" 3)`
+      );
+    });
   });
 });

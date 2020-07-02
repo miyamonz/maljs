@@ -6,6 +6,22 @@ import { core_ns } from "./core.js";
 
 const READ = (str) => read_str(str);
 
+const is_pair = (x) => Array.isArray(x) && x.length > 0;
+// quasiquoteはastをlistで受ける
+// 再帰している
+// 一番手前の要素から、unquoteに評価結果をconsかconcatで結合しながらlistを返す
+const quasiquote = (ast) => {
+  if (!is_pair(ast)) {
+    return [Symbol.for("quote"), ast];
+  } else if (ast[0] === Symbol.for("unquote")) {
+    return ast[1];
+  } else if (is_pair(ast[0]) && ast[0][0] === Symbol.for("splice-unquote")) {
+    return [Symbol.for("concat"), ast[0][1], quasiquote(ast.slice(1))];
+  } else {
+    return [Symbol.for("cons"), quasiquote(ast[0]), quasiquote(ast.slice(1))];
+  }
+};
+
 const eval_ast = (ast, env) => {
   if (typeof ast === "symbol") {
     return env_get(env, ast);
@@ -41,6 +57,9 @@ const EVAL = (ast, env) => {
         break;
       case "quote":
         return a1;
+      case "quasiquote":
+        ast = quasiquote(a1);
+        break; // continue TCO loop
       case "do":
         eval_ast(ast.slice(1, -1), env);
         ast = ast[ast.length - 1];
