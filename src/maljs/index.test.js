@@ -212,5 +212,15 @@ describe("maljs", () => {
       REP(`(def atm (atom 1))`);
       assert.equal(REP(`(g)`), `0`);
     });
+    it("cons", () => {
+      assert.equal(REP(`(cons 1 (list))`), `(1)`);
+      assert.equal(REP(`(cons 1 (list 2))`), `(1 2)`);
+      assert.equal(REP(`(cons 1 (list 2 3))`), `(1 2 3)`);
+      assert.equal(REP(`(cons (list 1) (list 2 3))`), `((1) 2 3)`);
+
+      REP(`(def a (list 2 3))`);
+      assert.equal(REP(`(cons 1 a)`), `(1 2 3)`);
+      assert.equal(REP(`a`), `(2 3)`);
+    });
   });
 });
