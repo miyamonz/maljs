@@ -37,6 +37,9 @@ export const core_ns = new Map([
   ["nth", (a, b) => (b < a.length ? a[b] : _error("nth: index out of range"))],
   ["first", (a) => (a !== null && a.length > 0 ? a[0] : null)],
   ["rest", (a) => (a === null ? [] : Array.from(a.slice(1)))],
+
+  //prettier-ignore
+  [ "throw", (a) => { throw a; } ],
 ]);
 
 function equal(a, b) {

@@ -343,5 +343,14 @@ describe("maljs", () => {
     it("macroexpand", () => {
       assert.equal(REP(`(macroexpand (unless2 2 3 4))`), `(if (not 2) 3 4)`);
     });
+
+    it("throw", () => {
+      assert.throws(
+        () => REP(`(throw "hoge")`),
+        (err) => {
+          return err === "hoge";
+        }
+      );
+    });
   });
 });
