@@ -26,6 +26,7 @@ export const core_ns = new Map([
   ["swap!", (atom, f, ...args) => (atom.val = f(atom.val, ...args))],
 
   ["cons", (a, b) => [a, ...b]],
+  ["concat", (...a) => a.reduce((x, y) => x.concat(y), [])],
 ]);
 
 function equal(a, b) {

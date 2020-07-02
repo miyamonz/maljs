@@ -222,5 +222,22 @@ describe("maljs", () => {
       assert.equal(REP(`(cons 1 a)`), `(1 2 3)`);
       assert.equal(REP(`a`), `(2 3)`);
     });
+    it("concat", () => {
+      assert.equal(REP(`(concat)`), `()`);
+      assert.equal(REP(`(concat (list 1 2))`), `(1 2)`);
+      assert.equal(REP(`(concat (list 1 2) (list 3 4))`), `(1 2 3 4)`);
+      assert.equal(
+        REP(`(concat (list 1 2) (list 3 4) (list 5 6))`),
+        `(1 2 3 4 5 6)`
+      );
+      assert.equal(REP(`(concat (concat))`), `()`);
+      assert.equal(REP(`(concat (list) (list))`), `()`);
+
+      REP(`(def a (list 1 2))`);
+      REP(`(def b (list 3 4))`);
+      assert.equal(REP(`(concat a b (list 5 6))`), `(1 2 3 4 5 6)`);
+      assert.equal(REP(`a`), `(1 2)`);
+      assert.equal(REP(`b`), `(3 4)`);
+    });
   });
 });
