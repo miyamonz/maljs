@@ -39,6 +39,8 @@ const EVAL = (ast, env) => {
         env = let_env;
         //return EVAL(a2, let_env);
         break;
+      case "quote":
+        return a1;
       case "do":
         eval_ast(ast.slice(1, -1), env);
         ast = ast[ast.length - 1];

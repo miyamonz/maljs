@@ -239,5 +239,10 @@ describe("maljs", () => {
       assert.equal(REP(`a`), `(1 2)`);
       assert.equal(REP(`b`), `(3 4)`);
     });
+    it("quote", () => {
+      assert.equal(REP(`(quote 7)`), `7`);
+      assert.equal(REP(`(quote (1 2 3))`), `(1 2 3)`);
+      assert.equal(REP(`(quote (1 2 (3 4)))`), `(1 2 (3 4))`);
+    });
   });
 });
