@@ -2,6 +2,10 @@ import { isList, Atom } from "./types.js";
 import { pr_str } from "./printer";
 import { read_str } from "./reader.js";
 
+function _error(e) {
+  throw new Error(e);
+}
+
 export const core_ns = new Map([
   ["+", (a, b = 0) => a + b],
   ["-", (a, b = 0) => a - b],
@@ -30,6 +34,7 @@ export const core_ns = new Map([
 
   ["cons", (a, b) => [a, ...b]],
   ["concat", (...a) => a.reduce((x, y) => x.concat(y), [])],
+  ["nth", (a, b) => (b < a.length ? a[b] : _error("nth: index out of range"))],
 ]);
 
 function equal(a, b) {
