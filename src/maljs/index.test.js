@@ -282,5 +282,14 @@ describe("maljs", () => {
         `(1 1 "b" "d" 3)`
       );
     });
+    it("quote equality", () => {
+      assert.equal(REP(`(= (quote abc) (quote abc))`), `true`);
+      assert.equal(REP(`(= (quote abc) (quote abcd))`), `false`);
+      assert.equal(REP(`(= (quote abc) "abc")`), `false`);
+      assert.equal(REP(`(= "abc" (quote abc))`), `false`);
+      assert.equal(REP(`(= "abc" (str (quote abc)))`), `true`);
+      assert.equal(REP(`(= (quote abc) nil)`), `false`);
+      assert.equal(REP(`(= nil (quote abc))`), `false`);
+    });
   });
 });
