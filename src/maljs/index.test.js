@@ -269,6 +269,14 @@ describe("maljs", () => {
       assert.equal(REP(`(first (list 10 11 12))`), `10`);
     });
 
+    it("rest", () => {
+      assert.equal(REP(`(rest (list))`), `()`);
+      assert.equal(REP(`(rest nil)`), `()`);
+      assert.equal(REP(`(rest (list 10))`), `()`);
+      assert.equal(REP(`(rest (list 10 11 12))`), `(11 12)`);
+      assert.equal(REP(`(rest (cons 10 (list 11 12)))`), `(11 12)`);
+    });
+
     it("quote", () => {
       assert.equal(REP(`(quote 7)`), `7`);
       assert.equal(REP(`(quote (1 2 3))`), `(1 2 3)`);
