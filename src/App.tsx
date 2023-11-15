@@ -22,10 +22,9 @@ export default function App() {
     appendHistpry(queue);
   };
 
-  const ref = useRef();
+  const ref = useRef<HTMLParagraphElement>(null);
   useEffect(() => {
     if (ref?.current) {
-      console.log(ref);
       ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [history.length]);
@@ -57,17 +56,49 @@ export default function App() {
 function MyInput({ onEnter }: { onEnter: (text: string) => void }) {
   const [text, setText] = useState("");
 
+  const ref = useRef<HTMLInputElement>(null);
   const pushEnter = () => {
     onEnter(text);
     setText("");
   };
+
+  const [pos, setPos] = useState(0);
+  const currentChar = text[pos - 1];
   return (
     <input
+      ref={ref}
       type="text"
       value={text}
-      onChange={(e) => setText(e.target.value)}
+      onChange={(e) => {
+        setText(e.target.value);
+      }}
       onKeyDown={(e) => {
-        if (e.keyCode === 13) pushEnter();
+        setPos(e.currentTarget.selectionStart ?? 0);
+        if (e.key === "Enter") {
+          pushEnter();
+        }
+
+        if (e.key === "Backspace" && currentChar === "(") {
+          if (text[pos] === ")") {
+            setText((prev) => prev.slice(0, pos - 1) + prev.slice(pos));
+            setTimeout(() => {
+              ref.current?.setSelectionRange(pos - 1, pos - 1);
+            }, 0);
+          }
+        }
+      }}
+      onKeyUp={(e) => {
+        setPos(e.currentTarget.selectionStart ?? 0);
+
+        if (e.key === "(") {
+          //move cursor
+
+          const pos = e.currentTarget.selectionStart || 0;
+          setText((prev) => prev.slice(0, pos) + ")" + prev.slice(pos));
+          setTimeout(() => {
+            ref.current?.setSelectionRange(pos, pos);
+          }, 0);
+        }
       }}
     />
   );
