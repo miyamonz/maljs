@@ -1,7 +1,11 @@
+import { MalAst } from "./core";
+
 export class BlankException extends Error {}
 
 class Reader {
-  constructor(tokens) {
+  tokens: string[];
+  position: number;
+  constructor(tokens: string[]) {
     this.tokens = tokens;
     this.position = 0;
   }
@@ -13,20 +17,21 @@ class Reader {
   }
 }
 
-function tokenize(str) {
+function tokenize(str: string) {
   const re = /[\s,]*(~@|[()'`~@]|"(?:\\.|[^\\"])*"?|;.*|[^\s,();]*)/g;
   let match = null;
-  let results = [];
-  while ((match = re.exec(str)[1]) != "") {
-    if (match[0] === ";") {
+  const results: string[] = [];
+  while ((match = re.exec(str)?.[1]) != "") {
+    if (match?.[0] === ";") {
       continue;
     }
-    results.push(match);
+    results.push(match!);
   }
   return results;
 }
+export type MalForm = readonly MalAst[] | readonly [symbol, MalAst] | MalAtom;
 
-function read_form(reader) {
+function read_form(reader: Reader): MalForm {
   const token = reader.peek();
   switch (token) {
     // reader macros/transforms
@@ -34,20 +39,20 @@ function read_form(reader) {
       return null; // Ignore comments
     case "@":
       reader.next();
-      return [Symbol.for("deref"), read_form(reader)];
+      return [Symbol.for("deref"), read_form(reader)] as const;
 
     case `'`:
       reader.next();
-      return [Symbol.for("quote"), read_form(reader)];
+      return [Symbol.for("quote"), read_form(reader)] as const;
     case "`":
       reader.next();
-      return [Symbol.for("quasiquote"), read_form(reader)];
+      return [Symbol.for("quasiquote"), read_form(reader)] as const;
     case "~":
       reader.next();
-      return [Symbol.for("unquote"), read_form(reader)];
+      return [Symbol.for("unquote"), read_form(reader)] as const;
     case "~@":
       reader.next();
-      return [Symbol.for("splice-unquote"), read_form(reader)];
+      return [Symbol.for("splice-unquote"), read_form(reader)] as const;
 
     // list
     case ")":
@@ -60,7 +65,8 @@ function read_form(reader) {
 }
 
 // read list of tokens
-function read_list(reader) {
+
+function read_list(reader: Reader): MalForm[] {
   const ast = []; // consider it as list
   let token = reader.next();
   if (token !== "(") {
@@ -77,12 +83,13 @@ function read_list(reader) {
   return ast;
 }
 
-function read_atom(reader) {
+type MalAtom = number | string | null | boolean | symbol;
+function read_atom(reader: Reader): MalAtom {
   const token = reader.next();
   if (token.match(/^-?[0-9]+$/)) {
     return parseInt(token, 10); // integer
   } else if (token.match(/^-?[0-9][0-9.]*$/)) {
-    return parseFloat(token, 10); // float
+    return parseFloat(token); // float
   } else if (token.match(/^"(?:\\.|[^\\"])*"$/)) {
     return token
       .slice(1, token.length - 1)
@@ -100,7 +107,7 @@ function read_atom(reader) {
   }
 }
 
-export function read_str(str) {
+export function read_str(str: string) {
   const tokens = tokenize(str);
   if (tokens.length === 0) {
     throw new BlankException(`token is blank ${str}`);

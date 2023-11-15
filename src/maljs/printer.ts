@@ -1,10 +1,11 @@
+import { MalAst } from "./core.js";
 import { isList, Atom } from "./types.js";
 
-export function pr_str(obj, _r = true) {
+export function pr_str(obj: MalAst, _r = true): string {
   if (isList(obj)) {
     return `(${obj.map((e) => pr_str(e, _r)).join(" ")})`;
   } else if (typeof obj === "symbol") {
-    return Symbol.keyFor(obj);
+    return Symbol.keyFor(obj) ?? "SYMBOL";
   } else if (typeof obj === "string") {
     if (_r) {
       const str = obj
