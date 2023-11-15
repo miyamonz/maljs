@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
+import { atom, useAtom } from "jotai";
 
-import { send } from "./maljs";
+import { send, env } from "./maljs";
+import { pr_str } from "./maljs/printer";
 
 type History = {
   text: string;
@@ -8,8 +10,10 @@ type History = {
   time: number;
 };
 
+const historyAtom = atom<History[]>([]);
+
 export default function App() {
-  const [history, setHistory] = useState<History[]>([]);
+  const [history, setHistory] = useAtom(historyAtom);
   const appendHistpry = (text: History) =>
     setHistory((prev) => [...prev, text]);
 
@@ -31,6 +35,30 @@ export default function App() {
   return (
     <>
       <h1>maljs</h1>
+      <div>
+        {Object.getOwnPropertySymbols(env).map((sym) => {
+          const key = sym.toString();
+          const value = env[sym];
+          if (typeof value !== "function") return;
+          return (
+            <span style={{ background: "lightgray", margin: 4 }} key={key}>
+              {Symbol.keyFor(sym)}
+            </span>
+          );
+        })}
+      </div>
+      <div>
+        {Object.getOwnPropertySymbols(env).map((sym) => {
+          const key = sym.toString();
+          const value = env[sym];
+          if (typeof value === "function") return;
+          return (
+            <div key={key}>
+              {key}: {pr_str(value!)}
+            </div>
+          );
+        })}
+      </div>
 
       <div
         style={{
@@ -60,14 +88,20 @@ function MyInput({ onEnter }: { onEnter: (text: string) => void }) {
   const pushEnter = () => {
     onEnter(text);
     setText("");
+
+    hisPos.current = 0;
   };
 
   const [pos, setPos] = useState(0);
   const currentChar = text[pos - 1];
+
+  const [history, setHistory] = useAtom(historyAtom);
+  const hisPos = useRef(0);
   return (
     <input
       ref={ref}
       type="text"
+      className="border border-1 rounded-sm border-gray-400"
       value={text}
       onChange={(e) => {
         setText(e.target.value);
@@ -85,6 +119,16 @@ function MyInput({ onEnter }: { onEnter: (text: string) => void }) {
               ref.current?.setSelectionRange(pos - 1, pos - 1);
             }, 0);
           }
+        }
+
+        if (e.key === "ArrowUp") {
+          hisPos.current = Math.min(++hisPos.current, history.length);
+          const last = history[history.length - hisPos.current];
+          if (last) setText(last.text);
+        } else if (e.key === "ArrowDown") {
+          hisPos.current = Math.max(--hisPos.current, 0);
+          const last = history[history.length - hisPos.current];
+          if (last) setText(last.text);
         }
       }}
       onKeyUp={(e) => {

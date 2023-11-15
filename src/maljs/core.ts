@@ -8,7 +8,7 @@ function _error(e: string) {
 
 export type MalAst = MalForm | CallableFunction;
 
-export const core_ns = new Map<string, MalAst>([
+export const core_ns = new Map<string, CallableFunction>([
   ["+", (a: number, b = 0) => a + b],
   ["-", (a: number, b = 0) => a - b],
   ["*", (a: number, b = 1) => a * b],

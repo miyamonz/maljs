@@ -150,7 +150,7 @@ const isMalFunc = (fn: { ast: unknown }): fn is MalFunc =>
 const PRINT = (exp: MalAst) => pr_str(exp);
 
 // repl
-const env = new_env();
+export const env = new_env();
 
 // core
 for (const [k, v] of core_ns) {
