@@ -1,5 +1,5 @@
 import { isList, Atom } from "./types.js";
-import { pr_str } from "./printer";
+import { pr_str } from "./printer.js";
 import { read_str } from "./reader.js";
 
 function _error(e) {

@@ -1,12 +1,19 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
-import { send } from "./maljs/index.js";
+import { send } from "./maljs";
+
+type History = {
+  text: string;
+  result: string;
+  time: number;
+};
 
 export default function App() {
-  const [history, setHistory] = useState([]);
-  const appendHistpry = (text) => setHistory((prev) => [...prev, text]);
+  const [history, setHistory] = useState<History[]>([]);
+  const appendHistpry = (text: History) =>
+    setHistory((prev) => [...prev, text]);
 
-  const onEnter = (text) => {
+  const onEnter = (text: string) => {
     const queue = {
       text,
       result: send(text),
@@ -35,7 +42,7 @@ export default function App() {
       >
         {history.map(({ text, time, result }, i) => (
           <p key={time} ref={i === history.length - 1 ? ref : null}>
-            user>: {text}
+            user: {text}
             <br />
             {result}
             <br />
@@ -47,7 +54,7 @@ export default function App() {
   );
 }
 
-function MyInput({ onEnter }) {
+function MyInput({ onEnter }: { onEnter: (text: string) => void }) {
   const [text, setText] = useState("");
 
   const pushEnter = () => {
