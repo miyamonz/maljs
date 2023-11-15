@@ -173,6 +173,14 @@ REP(`
           (throw "odd number of forms to cond"))
         (cons 'cond (rest (rest xs)))))))
 `);
+REP(`
+(defmacro defun
+  (fn (name args & body)
+    (list
+      'def
+      name
+      (cons 'fn (cons args body)))))
+`);
 
 export function send(text: string) {
   try {
